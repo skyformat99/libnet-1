@@ -48,7 +48,7 @@ int s_s = tcpbind(s_ip);
 tcplisten(s,10);
 while (1){
     ip c_ip;
-    int c_s = tcpaccept(s,c_s);
+    int c_s = tcpaccept(s,c_ip);
 }
 ...
 ```
