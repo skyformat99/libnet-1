@@ -21,26 +21,22 @@ ip ipaddr(const char* name, u_short port, enum iptype iptype)
 	ip          ip = { 0 };
 	char        host[100] = { 0 };
 	struct      hostent *hp;
-
-
 	if (iptype == IPV6) {
 		ip.iptype = IPV6;
 		ip.ipaddress.ipv6.sin6_port = htons(port);
 	}
-
 	else {
 		ip.iptype = IPV4;
 		ip.ipaddress.ipv4.sin_port = htons(port);
 	}
-
-
 	hp = gethostbyname(name);
-
 	if (hp) {
 		if (hp->h_addrtype == AF_INET)
-			ip.ipaddress.ipv4.sin_addr = *(struct in_addr*)hp->h_addr_list[0];
+			ip.ipaddress.ipv4.sin_addr =
+                    *(struct in_addr*)hp->h_addr_list[0];
 		else
-			ip.ipaddress.ipv6.sin6_addr = *(struct in6_addr*)hp->h_addr_list[0];
+			ip.ipaddress.ipv6.sin6_addr =
+                    *(struct in6_addr*)hp->h_addr_list[0];
 	}
 	else {
 		errno = ADDRESS_ERROR;
@@ -52,17 +48,20 @@ ip ipaddr(const char* name, u_short port, enum iptype iptype)
 const char* addrstr(ip ip, char *str)
 {
 	if (ip.iptype == IPV4) {
-		return inet_ntop(AF_INET, &(ip.ipaddress.ipv4.sin_addr), str, INET_ADDRSTRLEN);
+		return inet_ntop(AF_INET, &(ip.ipaddress.ipv4.sin_addr),
+                         str, INET_ADDRSTRLEN);
 	}
 	else
 	{
-		return inet_ntop(AF_INET6, &(ip.ipaddress.ipv6.sin6_addr), str, INET6_ADDRSTRLEN);
+		return inet_ntop(AF_INET6, &(ip.ipaddress.ipv6.sin6_addr),
+                         str, INET6_ADDRSTRLEN);
 	}
 }
 
 int port(ip ip)
 {
-	return ip.iptype == IPV4 ? ntohs(ip.ipaddress.ipv4.sin_port) : ntohs(ip.ipaddress.ipv6.sin6_port);
+	return ip.iptype == IPV4 ? ntohs(ip.ipaddress.ipv4.sin_port)
+                             : ntohs(ip.ipaddress.ipv6.sin6_port);
 }
 
 int tcpconnect(ip ip)
@@ -78,7 +77,9 @@ int tcpconnect(ip ip)
 			return NULL;
 		}
 		ip.ipaddress.ipv4.sin_family = AF_INET;
-		if (connect(sock, (struct sockaddr *) &ip.ipaddress.ipv4, sizeof(ip.ipaddress.ipv4)) !=0) {
+		if (connect(sock, (struct sockaddr *) &ip.ipaddress.ipv4,
+                    sizeof(ip.ipaddress.ipv4)) !=0)
+        {
 #ifdef _WIN32
 			errno = WSAGetLastError();
 #else
@@ -89,7 +90,8 @@ int tcpconnect(ip ip)
 		}
 		return sock;
 	}
-	else {
+	else
+    {
 		int sock = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
 		if (sock == -1)
 		{
@@ -101,7 +103,8 @@ int tcpconnect(ip ip)
 			return NULL;
 		}
 		ip.ipaddress.ipv6.sin6_family = AF_INET6;
-		if (connect(sock, (struct sockaddr*)&ip.ipaddress.ipv6, sizeof(ip.ipaddress.ipv6)) !=0)
+		if (connect(sock, (struct sockaddr*)&ip.ipaddress.ipv6,
+                    sizeof(ip.ipaddress.ipv6)) !=0)
 		{
 #ifdef _WIN32
 			errno = WSAGetLastError();
@@ -113,7 +116,6 @@ int tcpconnect(ip ip)
 		}
 		return sock;
 	}
-
 }
 
 
@@ -139,7 +141,8 @@ int tcpbind(ip ip)
 #endif 
 			return NULL;
 		}
-		if (bind(sock, (struct sockaddr *) &ip.ipaddress.ipv4, sizeof(ip.ipaddress.ipv4)) != 0) {
+		if (bind(sock, (struct sockaddr *) &ip.ipaddress.ipv4,
+                 sizeof(ip.ipaddress.ipv4)) != 0) {
 #ifdef _WIN32
 			errno = WSAGetLastError();
 #else
@@ -148,7 +151,8 @@ int tcpbind(ip ip)
 			return NULL;
 		}
 	}
-	else {
+	else
+    {
 		int  sock = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
 		if (sock == -1) {
 #ifdef _WIN32
@@ -159,7 +163,8 @@ int tcpbind(ip ip)
 			return NULL;
 		}
 
-		if (bind(sock, (struct sockaddr *)&ip.ipaddress.ipv6, sizeof(ip.ipaddress.ipv6)) !=0) {
+		if (bind(sock, (struct sockaddr *)&ip.ipaddress.ipv6,
+                 sizeof(ip.ipaddress.ipv6)) !=0) {
 #ifdef _WIN32
 			errno = WSAGetLastError();
 #else
@@ -241,31 +246,36 @@ int udpconnect(ip ip)
 
 int udpbind(int sock, ip ip)
 {
-	if (ip.iptype == IPV4)
-		return bind(sock, (struct sockaddr*)&ip.ipaddress.ipv4, sizeof(ip.ipaddress.ipv4));
+    if (ip.iptype == IPV4)
+		return bind(sock, (struct sockaddr*)&ip.ipaddress.ipv4,
+                    sizeof(ip.ipaddress.ipv4));
 	else
-		return bind(sock, (struct sockaddr*)&ip.ipaddress.ipv6, sizeof(ip.ipaddress.ipv6));
+		return bind(sock, (struct sockaddr*)&ip.ipaddress.ipv6,
+                    sizeof(ip.ipaddress.ipv6));
 }
 
 
 int udpsend(int sock, ip ip, const char* buf, size_t len)
 {
-
 	if (ip.iptype == IPV4) {
-		return sendto(sock, buf, len, 0, (struct sockaddr*)&ip.ipaddress.ipv4, sizeof(ip.ipaddress.ipv4));
+		return sendto(sock, buf, len, 0,\
+         (struct sockaddr*)&ip.ipaddress.ipv4, sizeof(ip.ipaddress.ipv4));
 	}
 	else {
-		return sendto(sock, buf, len, 0, (struct sockaddr *)&ip.ipaddress.ipv6, sizeof(ip.ipaddress.ipv6));
+		return sendto(sock, buf, len, 0, \
+        (struct sockaddr *)&ip.ipaddress.ipv6, sizeof(ip.ipaddress.ipv6));
 	}
 }
 
 int udprecv(int sock, ip ip, char* buf, size_t len)
 {
 	if (ip.iptype == IPV4) {
-		return recvfrom(sock, buf, len, 0, (struct sockaddr*)&ip.ipaddress.ipv4, sizeof(ip.ipaddress.ipv4));
+		return recvfrom(sock, buf, len, 0, (struct sockaddr*)&ip.ipaddress.ipv4,
+                        sizeof(ip.ipaddress.ipv4));
 	}
 	else {
-		return recvfrom(sock, buf, len, 0, (struct sockaddr*)&ip.ipaddress.ipv6, sizeof(ip.ipaddress.ipv6));
+		return recvfrom(sock, buf, len, 0, (struct sockaddr*)&ip.ipaddress.ipv6,
+                        sizeof(ip.ipaddress.ipv6));
 	}
 }
 

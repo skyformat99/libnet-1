@@ -24,67 +24,67 @@ extern "C" {
 
 #define    ADDRESS_TYPE_ERROR   1
 #define    ADDRESS_ERROR        2
-
 #define    BUF_NOT_ENOUGH       3
 #define    REMALLOC_ERROR       4
 
+enum iptype {
+    IPV4 = 0,
+    IPV6
+};
 
-	enum iptype {
-		IPV4 = 0,
-		IPV6
-	};
+union ipaddress {
+    struct sockaddr_in    ipv4;
+    struct sockaddr_in6   ipv6;
+};
 
-	union ipaddress {
-		struct sockaddr_in    ipv4;
-		struct sockaddr_in6   ipv6;
-	};
-
-	typedef struct _ip {
-		enum iptype iptype;
-		union ipaddress ipaddress;
-	}ip;
+typedef struct _ip {
+    enum iptype iptype;
+    union ipaddress ipaddress;
+}ip;
 
 
-	int sock_init();
+int sock_init();
 
-	///////////////////////////////////////////////////////
-	ip ipaddr(const char* name, u_short port, enum iptype iptype);
+///////////////////////////////////////////////////////
+ip ipaddr(const char* name, u_short port, enum iptype iptype);
 
-	const char* addrstr(ip ip, char *str);
+const char* addrstr(ip ip, char *str);
 
-	int port(ip ip);
+int port(ip ip);
 
-	//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
 
-	int tcpconnect(ip ip);
+int tcpconnect(ip ip);
 
-	int tcpsend(int sock, const char *buf, size_t len);
+int tcpsend(int sock, const char *buf, size_t len);
 
-	int tcprecv(int sock, char *buf, size_t len);
+int tcprecv(int sock, char *buf, size_t len);
 
-	int tcpbind(ip ip);
+int tcpbind(ip ip);
 
-	int tcplisten(int sock, int backlog);
+int tcplisten(int sock, int backlog);
 
-	int tcpaccept(int sock, ip clientip);
+int tcpaccept(int sock, ip clientip);
 
-	int tcprecvuntil(int sock, char *buf, size_t len, const char *s, size_t s_len);
+int tcprecvuntil(int sock, char *buf, size_t len,
+                 const char *s,
+                 size_t s_len);
 
-	int tcpclose(int sock);
+int tcpclose(int sock);
 
-	////////////////////////////////////////////////////////
-	int udpconnect(ip ip);
+////////////////////////////////////////////////////////
+int udpconnect(ip ip);
 
-	int udpbind(int sock, ip ip);
+int udpbind(int sock, ip ip);
 
-	int udpsend(int sock, ip ip, const char* buf, size_t len);
+int udpsend(int sock, ip ip, const char* buf, size_t len);
 
-	int udprecv(int sock, ip ip, char* buf, size_t len);
+int udprecv(int sock, ip ip, char* buf, size_t len);
 
-	int udpclose(int sock);
+int udpclose(int sock);
 
-	////////////////////////////////////////////////////////
-	void sock_clean(void);
+////////////////////////////////////////////////////////
+void sock_clean(void);
 
 #ifdef __cplusplus
 } // extern "C"
