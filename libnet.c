@@ -184,7 +184,8 @@ int tcplisten(int sock, int backlog)
 int tcpaccept(int sock, ip clientip)
 {
 	int addrlen = sizeof(struct sockaddr);
-	return accept(sock, (struct sockaddr*)&clientip.ipaddress.ipv4, &addrlen);
+	return accept(sock, (struct sockaddr*)&clientip.ipaddress.ipv4, 
+		&addrlen);
 }
 
 
