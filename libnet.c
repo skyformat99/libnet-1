@@ -6,7 +6,7 @@ int sock_init()
 #ifdef _WIN32
 	WSADATA wsa_data;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0)
-	{
+    {
 		errno = WSAGetLastError();
 		return -1;
 	}
@@ -24,10 +24,12 @@ ip ipaddr(const char* name, u_short port, enum iptype iptype)
 	if (iptype == IPV6) {
 		ip.iptype = IPV6;
 		ip.ipaddress.ipv6.sin6_port = htons(port);
+        ip.ipaddress.ipv6.sin6_family = AF_INET6;
 	}
 	else {
 		ip.iptype = IPV4;
 		ip.ipaddress.ipv4.sin_port = htons(port);
+        ip.ipaddress.ipv4.sin_family =AF_INET;
 	}
 	hp = gethostbyname(name);
 	if (hp) {

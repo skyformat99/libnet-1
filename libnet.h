@@ -7,11 +7,15 @@ extern "C" {
 
 #ifdef _WIN32
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+//Minimum system required are
+//Windows Server 2008 or Windows Vista
+//http://msdn.microsoft.com/en-us/library/aa383745.aspx
+#define _WIN32_WINNT 0x0600
 #include <Winsock2.h>
 #include <ws2ipdef.h>
 #include <Ws2tcpip.h>
-#pragma comment(lib,"ws2_32.lib")
 #include <stdint.h>
+#pragma comment(lib,"ws2_32.lib")
 #else
 #include <sys/socket.h>
 #include <unistd.h>
@@ -22,10 +26,8 @@ extern "C" {
 #include <errno.h>
 #endif
 
-#define    ADDRESS_TYPE_ERROR   1
-#define    ADDRESS_ERROR        2
-#define    BUF_NOT_ENOUGH       3
-#define    REMALLOC_ERROR       4
+#define    ADDRESS_ERROR        1
+#define    BUF_NOT_ENOUGH       2
 
 enum iptype {
     IPV4 = 0,
