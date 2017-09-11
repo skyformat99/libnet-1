@@ -2,15 +2,34 @@
 Single file,c socket api wrap,support windows and linux,easy to use
 
 ## install
-windows
+### windows
+just copy files to your project 
 ```c
-//just copy file to your project
 #include "libnet.h"
 ```
-linux
+or
+```cmd
+git clone https://github.com/p00s/libnet.git
+cd libnet
+mkdir build
+cd build 
+cmake ../
+open vs and build
 ```
+### linux
+```shell
 gcc -c libnet.c
 ar rcs libnet.a libnet.o
+gcc test.c -static -L . -lnet
+```
+or
+```shell
+git clone https://github.com/p00s/libnet.git
+cd libnet
+mkdir build
+cd build 
+cmake ../
+make
 gcc test.c -static -L . -lnet
 ```
 ## Documention
